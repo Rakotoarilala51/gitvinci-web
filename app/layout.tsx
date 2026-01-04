@@ -22,7 +22,7 @@ const mono = Space_Mono({
 export const metadata: Metadata = {
   title: "Gitvinci — dessine ton graph de contributions GitHub",
   description:
-    "Éditeur visuel de motifs pour le graph de contributions GitHub : clique sur la grille, génère le plan de commits et le script bash pour reproduire le motif sur ton profil.",
+    "Éditeur de pixel art pour le calendrier de contributions GitHub : dessine, écris du texte et personnalise des templates sur les vraies dates de ton année.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

@@ -1,7 +1,7 @@
 "use client";
 
 import type { Intensity, ThemeMode } from "../lib/types";
-import { editorColorFor, themePanelColors } from "../lib/colors";
+import { colorFor, themePanelColors } from "../lib/colors";
 
 type Props = {
   selected: Intensity;
@@ -25,9 +25,9 @@ export default function IntensityPalette({
   const panel = themePanelColors(theme);
 
   return (
-    <div className="flex flex-wrap items-center gap-2">
+    <div className="studio-palette">
       <span className="text-sm font-semibold" style={{ color: panel.text }}>
-        Niveau :
+        Intensité
       </span>
       {[1, 2, 3, 4].map((level) => (
         <button
@@ -40,13 +40,14 @@ export default function IntensityPalette({
           }`}
           style={{ color: panel.text, borderColor: selected === level ? undefined : panel.border }}
           title={`Niveau ${level} — ${LEVEL_INFO[level as Intensity]}`}
+          aria-label={`Intensité ${level} : ${LEVEL_INFO[level as Intensity]}`}
           aria-pressed={selected === level}
         >
           <span
             className="w-4 h-4 rounded-[3px]"
-            style={{ background: editorColorFor(theme, level as Intensity) }}
+            style={{ background: colorFor(theme, level as Intensity) }}
           />
-          {LEVEL_INFO[level as Intensity]}
+          {level}
         </button>
       ))}
     </div>

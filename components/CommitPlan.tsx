@@ -1,143 +1,40 @@
 "use client";
+import { useState } from "react";
+import type { CommitEntry, ThresholdConfig } from "../lib/types";
+import { countCommits, isFuture } from "../lib/grid";
 
-import { useMemo } from "react";
-import type {
-  Grid,
-  ThresholdConfig,
-  ThemeMode,
-  CommitEntry,
-} from "../lib/types";
-import { countCommits, countActiveCells, isFuture, cellToDate } from "../lib/grid";
-import { themePanelColors } from "../lib/colors";
-
-type Props = {
-  grid: Grid;
-  year: number;
-  thresholds: ThresholdConfig;
-  theme: ThemeMode;
-  message: string;
-  includeFuture: boolean;
-  onMessageChange: (msg: string) => void;
-  onIncludeFutureChange: (v: boolean) => void;
-  plan: CommitEntry[];
-};
-
-export default function CommitPlan({
-  grid,
-  year,
-  thresholds,
-  theme,
-  message,
-  includeFuture,
-  onMessageChange,
-  onIncludeFutureChange,
-  plan,
-}: Props) {
-  const panel = themePanelColors(theme);
-
-  const futureCount = useMemo(() => {
-    let count = 0;
-    for (let y = 0; y < 7; y++) {
-      for (let x = 0; x < 53; x++) {
-        if (grid[y][x] > 0 && isFuture(cellToDate(y, x, year))) count++;
-      }
-    }
-    return count;
-  }, [grid, year]);
-
-  const totalCommits = countCommits(plan);
-  const activeCells = countActiveCells(grid);
-
-  const input =
-    "w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent";
-  const inputStyle = { color: panel.text, borderColor: panel.border };
-  void thresholds;
-
-  return (
-    <div
-      className="rounded-xl border p-4 transition-colors"
-      style={{ background: panel.card, borderColor: panel.border }}
-    >
-      <h3 className="text-sm font-semibold mb-3" style={{ color: panel.text }}>
-        Plan de commits
-      </h3>
-
-      <label className="block text-xs font-medium mb-1" style={{ color: panel.muted }}>
-        Message de commit
-      </label>
-      <input
-        value={message}
-        onChange={(e) => onMessageChange(e.target.value)}
-        className={input}
-        style={inputStyle}
-        placeholder="gitvinci pattern"
-      />
-
-      <label
-        className="flex items-center gap-2 mt-2 text-xs cursor-pointer"
-        style={{ color: panel.text }}
-      >
-        <input
-          type="checkbox"
-          checked={includeFuture}
-          onChange={(e) => onIncludeFutureChange(e.target.checked)}
-          className="accent-accent"
-        />
-        Inclure les dates futures ({futureCount} cellules)
-      </label>
-      {futureCount > 0 && includeFuture && (
-        <p className="mt-1 text-[11px] text-warn">
-          ⚠️ {futureCount} cellules sont dans le futur : GitHub ne prendra en compte ces commits
-          qu&apos;à partir de la date arrivée. Décoche pour les exclure du plan.
-        </p>
-      )}
-
-      <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-lg border p-2" style={{ borderColor: panel.border }}>
-          <div className="text-lg font-bold text-accent">{activeCells}</div>
-          <div className="text-[10px]" style={{ color: panel.muted }}>
-            cellules actives
-          </div>
-        </div>
-        <div className="rounded-lg border p-2" style={{ borderColor: panel.border }}>
-          <div className="text-lg font-bold text-accent">{totalCommits}</div>
-          <div className="text-[10px]" style={{ color: panel.muted }}>
-            commits générés
-          </div>
-        </div>
-        <div className="rounded-lg border p-2" style={{ borderColor: panel.border }}>
-          <div className="text-lg font-bold text-accent">{plan.length}</div>
-          <div className="text-[10px]" style={{ color: panel.muted }}>
-            jours avec commits
-          </div>
-        </div>
-      </div>
-
-      <div className="mt-3 max-h-48 overflow-y-auto rounded-lg border" style={{ borderColor: panel.border }}>
-        <table className="w-full text-left text-xs">
-          <thead className="sticky top-0" style={{ background: panel.card }}>
-            <tr style={{ color: panel.muted }}>
-              <th className="px-2 py-1.5 font-medium">Date</th>
-              <th className="px-2 py-1.5 font-medium">Commits</th>
-            </tr>
-          </thead>
-          <tbody style={{ color: panel.text }}>
-            {plan.map((entry) => (
-              <tr key={entry.date} className="border-t" style={{ borderColor: panel.border }}>
-                <td className="px-2 py-1 font-mono">{entry.date}</td>
-                <td className="px-2 py-1">{entry.count}</td>
-              </tr>
-            ))}
-            {plan.length === 0 && (
-              <tr>
-                <td colSpan={2} className="px-2 py-3 text-center" style={{ color: panel.muted }}>
-                  Dessine quelque chose sur la grille pour générer un plan.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+export default function CommitPlan({ plan, thresholds, onThresholdsChange }: {
+  plan: CommitEntry[]; thresholds: ThresholdConfig; onThresholdsChange: (value: ThresholdConfig) => void;
+}) {
+  const [feedback, setFeedback] = useState("");
+  const dateLabel = (date: string) => date.split("-").reverse().join("-");
+  const output = plan.map(entry => `${dateLabel(entry.date)} : ${entry.count} commit${entry.count > 1 ? "s" : ""}`).join("\n");
+  function download() {
+    const csv = "date,commits\n" + plan.map(entry => `${dateLabel(entry.date)},${entry.count}`).join("\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const link = document.createElement("a"); link.href = url; link.download = "gitvinci-commits.csv"; link.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+  return <section id="commit-dates" className="commit-output" aria-labelledby="commit-title">
+    <div className="section-heading"><div><span className="step-number">▤</span><h2 id="commit-title">Les commits, jour par jour</h2></div><span className="eyebrow">{plan.length} JOURS · {countCommits(plan)} COMMITS PRÉVUS</span></div>
+    <p className="section-description">Chaque niveau correspond au nombre de commits ci-dessous. Le récapitulatif suit ton dessin et ses décalages, dates futures comprises.</p>
+    <div className="commit-thresholds">{(["l1", "l2", "l3", "l4"] as const).map((key, index) =>
+      <label key={key}>Niveau {index + 1}<select aria-label={`Commits pour le niveau ${index + 1}`} value={thresholds[key]} onChange={event => onThresholdsChange({ ...thresholds, [key]: Number(event.target.value) })}>
+        {Array.from({ length: 100 }, (_, i) => i + 1).map(value => <option key={value} value={value}>{value} commit{value > 1 ? "s" : ""}</option>)}
+      </select></label>
+    )}</div>
+    <p className="editor-help">Ces paliers définissent ton plan ; les nuances réelles de GitHub dépendent de l’activité du profil.</p>
+    <div className="commit-actions">
+      <button type="button" className="tool-button" disabled={!plan.length} onClick={async () => {
+        try { await navigator.clipboard.writeText(output); setFeedback("Récapitulatif copié."); }
+        catch { setFeedback("Copie indisponible. Tu peux télécharger le CSV."); }
+      }}>Copier les dates</button>
+      <button type="button" className="tool-button" disabled={!plan.length} onClick={download}>Télécharger le CSV</button>
+      <span role="status">{feedback}</span>
     </div>
-  );
+    <div className="commit-table"><table><caption className="sr-only">Nombre de commits à prévoir par date, en UTC</caption><thead><tr><th scope="col">Date (JJ-MM-AAAA)</th><th scope="col">Commits à prévoir</th><th scope="col">Période</th></tr></thead><tbody>
+      {plan.map(entry => <tr key={entry.date}><td>{dateLabel(entry.date)}</td><td>{entry.count} commit{entry.count > 1 ? "s" : ""}</td><td>{isFuture(new Date(entry.date + "T00:00:00Z")) ? "À venir" : "Passée / aujourd’hui"}</td></tr>)}
+      {!plan.length && <tr><td colSpan={3}>Dessine ou choisis un template pour obtenir les dates et les quantités.</td></tr>}
+    </tbody></table></div>
+  </section>;
 }

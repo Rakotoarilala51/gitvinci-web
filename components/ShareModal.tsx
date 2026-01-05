@@ -46,7 +46,10 @@ export default function ShareModal({
         style={{ background: panel.card, border: `1px solid ${panel.border}` }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 className="text-base font-semibold mb-3" style={{ color: panel.text }}>
+        <h3
+          className="text-base font-semibold mb-3"
+          style={{ color: panel.text }}
+        >
           Partager ce motif
         </h3>
 
@@ -67,9 +70,13 @@ export default function ShareModal({
                 <div
                   key={`${x}-${y}`}
                   className="rounded-[1px]"
-                  style={{ width: 8, height: 8, background: editorColorFor(theme, v) }}
+                  style={{
+                    width: 8,
+                    height: 8,
+                    background: editorColorFor(theme, v),
+                  }}
                 />
-              ))
+              )),
             )}
           </div>
         </div>
@@ -94,8 +101,9 @@ export default function ShareModal({
         </div>
 
         <p className="mt-3 text-[11px]" style={{ color: panel.muted }}>
-          Le lien embarque tout le motif — tu peux l&apos;envoyer à n&apos;importe qui, il
-          s&apos;affichera directement dans l&apos;éditeur.
+          Le lien embarque tout le motif — tu peux l&apos;envoyer à
+          n&apos;importe qui, il s&apos;affichera directement dans
+          l&apos;éditeur.
         </p>
 
         <button

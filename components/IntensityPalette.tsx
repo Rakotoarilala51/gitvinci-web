@@ -17,11 +17,7 @@ const LEVEL_INFO: Record<Intensity, string> = {
   4: "Intense",
 };
 
-export default function IntensityPalette({
-  selected,
-  onChange,
-  theme,
-}: Props) {
+export default function IntensityPalette({ selected, onChange, theme }: Props) {
   const panel = themePanelColors(theme);
 
   return (
@@ -38,7 +34,10 @@ export default function IntensityPalette({
               ? "border-accent bg-accent/10"
               : "hover:border-accent/50"
           }`}
-          style={{ color: panel.text, borderColor: selected === level ? undefined : panel.border }}
+          style={{
+            color: panel.text,
+            borderColor: selected === level ? undefined : panel.border,
+          }}
           title={`Niveau ${level} — ${LEVEL_INFO[level as Intensity]}`}
           aria-label={`Intensité ${level} : ${LEVEL_INFO[level as Intensity]}`}
           aria-pressed={selected === level}

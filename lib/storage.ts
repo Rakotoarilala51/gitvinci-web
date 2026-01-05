@@ -66,7 +66,12 @@ export function decodeGrid(encoded: string, length = 53): Grid {
   return grid;
 }
 
-export function buildShareUrl(id: string, grid: Grid, year: number, thresholds: ThresholdConfig): string {
+export function buildShareUrl(
+  id: string,
+  grid: Grid,
+  year: number,
+  thresholds: ThresholdConfig,
+): string {
   const base = `${window.location.origin}${window.location.pathname}`;
   const params = new URLSearchParams({
     art: id,
@@ -77,7 +82,9 @@ export function buildShareUrl(id: string, grid: Grid, year: number, thresholds: 
   return `${base}?${params.toString()}`;
 }
 
-export function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
+export function hexToRgb(
+  hex: string,
+): { r: number; g: number; b: number } | null {
   const m = hex.replace("#", "");
   if (m.length === 3) {
     const r = parseInt(m[0] + m[0], 16);

@@ -51,7 +51,7 @@ export default function ImageConverter({ year, theme, onPaste }: Props) {
   const handlePaste = () => {
     if (!preview) return;
     const full: Grid = Array.from({ length: GRID_ROWS }, () =>
-      Array.from({ length: GRID_COLS }, () => 0)
+      Array.from({ length: GRID_COLS }, () => 0),
     );
     const xOffset = Math.floor((GRID_COLS - preview[0].length) / 2);
     for (let y = 0; y < GRID_ROWS; y++) {
@@ -112,7 +112,10 @@ export default function ImageConverter({ year, theme, onPaste }: Props) {
               />
               Inverser
             </label>
-            <div className="flex items-center gap-1 text-xs" style={{ color: panel.text }}>
+            <div
+              className="flex items-center gap-1 text-xs"
+              style={{ color: panel.text }}
+            >
               {["N1", "N2", "N3", "N4"].map((cl, i) => (
                 <label key={cl} className="flex items-center gap-1">
                   {cl}
@@ -163,7 +166,7 @@ export default function ImageConverter({ year, theme, onPaste }: Props) {
                           : editorColorFor(theme, 0),
                     }}
                   />
-                ))
+                )),
               )}
             </div>
           </div>
@@ -173,7 +176,11 @@ export default function ImageConverter({ year, theme, onPaste }: Props) {
   );
 }
 
-function sampleImage(img: HTMLImageElement, invert: boolean, ts: Thresholds): Grid {
+function sampleImage(
+  img: HTMLImageElement,
+  invert: boolean,
+  ts: Thresholds,
+): Grid {
   const canvas = document.createElement("canvas");
   const W = 53;
   const H = 7;
@@ -215,6 +222,6 @@ function sampleImage(img: HTMLImageElement, invert: boolean, ts: Thresholds): Gr
 
 function empty(): Grid {
   return Array.from({ length: GRID_ROWS }, () =>
-    Array.from({ length: GRID_COLS }, () => 0)
+    Array.from({ length: GRID_COLS }, () => 0),
   );
 }

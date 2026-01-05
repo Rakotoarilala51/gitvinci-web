@@ -17,7 +17,11 @@ export const GITHUB_SCALE_DARK = [
 ];
 
 export const EDITOR_SCALE_LIGHT = [
-  "#111827", "#20265b", "#2a3fe5", "#8f7cce", "#f4b9b0",
+  "#111827",
+  "#20265b",
+  "#2a3fe5",
+  "#8f7cce",
+  "#f4b9b0",
 ];
 
 export const EDITOR_SCALE_DARK = EDITOR_SCALE_LIGHT;

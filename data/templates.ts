@@ -1,5 +1,10 @@
 import type { Grid, Intensity, TextFontName } from "../lib/types";
-import { calendarColumns, emptyGrid, normalizeGrid, placePattern } from "../lib/grid";
+import {
+  calendarColumns,
+  emptyGrid,
+  normalizeGrid,
+  placePattern,
+} from "../lib/grid";
 import { textToGrid } from "../lib/fonts";
 
 export type TemplateDefinition = {
@@ -11,40 +16,57 @@ export type TemplateDefinition = {
 
 function gridFromStrings(rows: string[], intensity: Intensity = 4): Grid {
   return rows.map((row) =>
-    row.split("").map((ch) => (ch === "0" ? 0 : intensity))
+    row.split("").map((ch) => (ch === "0" ? 0 : intensity)),
   );
 }
 
-function textTemplate(text: string, fontSize: TextFontName, intensity: Intensity = 4): Grid {
+function textTemplate(
+  text: string,
+  fontSize: TextFontName,
+  intensity: Intensity = 4,
+): Grid {
   const { grid } = textToGrid(text, fontSize);
   return grid.map((row) => row.map((v) => (v > 0 ? intensity : 0)));
 }
 
-export function buildTemplate(template: TemplateDefinition, year: number): Grid | null {
+export function buildTemplate(
+  template: TemplateDefinition,
+  year: number,
+): Grid | null {
   const pattern = template.build(year);
-  return template.placement === "calendar" ? normalizeGrid(pattern, year) : placePattern(pattern, year);
+  return template.placement === "calendar"
+    ? normalizeGrid(pattern, year)
+    : placePattern(pattern, year);
 }
 
 export const TEMPLATES: TemplateDefinition[] = [
   {
     name: "No-life",
-    description: "Zéro jour de repos. Même le 29 février. C’est une blague, pas un conseil de vie.",
+    description:
+      "Zéro jour de repos. Même le 29 février. C’est une blague, pas un conseil de vie.",
     placement: "calendar",
     build: (year = new Date().getUTCFullYear()) =>
-      normalizeGrid(emptyGrid(calendarColumns(year)).map(row => row.map(() => 4 as Intensity)), year),
+      normalizeGrid(
+        emptyGrid(calendarColumns(year)).map((row) =>
+          row.map(() => 4 as Intensity),
+        ),
+        year,
+      ),
   },
   {
     name: "Batman",
-    description: "Le signal de Gotham, version pixel. À toi de veiller sur le code.",
-    build: () => gridFromStrings([
-      "10000001010000001",
-      "11000001110000011",
-      "11110011111001111",
-      "11111111111111111",
-      "01111111111111110",
-      "00110011111001100",
-      "00000001110000000",
-    ]),
+    description:
+      "Le signal de Gotham, version pixel. À toi de veiller sur le code.",
+    build: () =>
+      gridFromStrings([
+        "10000001010000001",
+        "11000001110000011",
+        "11110011111001111",
+        "11111111111111111",
+        "01111111111111110",
+        "00110011111001100",
+        "00000001110000000",
+      ]),
   },
   {
     name: "HIRE ME!",

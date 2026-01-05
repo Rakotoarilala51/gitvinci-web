@@ -48,7 +48,10 @@ export default function SettingsPanel({
         Année &amp; intensité des commits
       </h3>
 
-      <label className="block mb-1 text-xs font-medium" style={{ color: panel.muted }}>
+      <label
+        className="block mb-1 text-xs font-medium"
+        style={{ color: panel.muted }}
+      >
         Année du graphique
       </label>
       <div className="flex flex-wrap gap-1.5 mb-4">
@@ -61,7 +64,10 @@ export default function SettingsPanel({
                 ? "border-accent bg-accent/10"
                 : "hover:border-accent/40"
             }`}
-            style={{ color: panel.text, borderColor: year === y ? undefined : panel.border }}
+            style={{
+              color: panel.text,
+              borderColor: year === y ? undefined : panel.border,
+            }}
             aria-pressed={year === y}
           >
             {y}
@@ -69,8 +75,12 @@ export default function SettingsPanel({
         ))}
       </div>
 
-      <label className="block mb-1 text-xs font-medium" style={{ color: panel.muted }}>
-        Commits par jour (paliers fixes — pas les quartiles dynamiques de GitHub)
+      <label
+        className="block mb-1 text-xs font-medium"
+        style={{ color: panel.muted }}
+      >
+        Commits par jour (paliers fixes — pas les quartiles dynamiques de
+        GitHub)
       </label>
       <div className="grid grid-cols-2 gap-2">
         {LABELS.map(({ key, level, default: def }) => (
@@ -84,7 +94,10 @@ export default function SettingsPanel({
               max={100}
               value={thresholds[key]}
               onChange={(e) =>
-                setThresholds({ ...thresholds, [key]: Number(e.target.value) || def })
+                setThresholds({
+                  ...thresholds,
+                  [key]: Number(e.target.value) || def,
+                })
               }
               className={input}
               style={inputStyle}
@@ -93,8 +106,9 @@ export default function SettingsPanel({
         ))}
       </div>
       <p className="mt-2 text-[11px]" style={{ color: panel.muted }}>
-        GitHub n&apos;utilise pas de paliers fixes — il calcule des quartiles dynamiques par profil.
-        On définit nos propres paliers larges pour garantir un contraste net (ex. 1 / 5 / 10 / 20).
+        GitHub n&apos;utilise pas de paliers fixes — il calcule des quartiles
+        dynamiques par profil. On définit nos propres paliers larges pour
+        garantir un contraste net (ex. 1 / 5 / 10 / 20).
       </p>
     </div>
   );

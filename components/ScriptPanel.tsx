@@ -11,7 +11,7 @@ type Props = {
 };
 
 export default function ScriptPanel({ plan, theme }: Props) {
-  const [repoUrl, setRepoUrl] = useState(""); 
+  const [repoUrl, setRepoUrl] = useState("");
   const [branch, setBranch] = useState("main");
   const [gitEmail, setGitEmail] = useState("");
   const [gitName, setGitName] = useState("");
@@ -20,7 +20,7 @@ export default function ScriptPanel({ plan, theme }: Props) {
 
   const script = useMemo(
     () => generateBashScript(plan, repoUrl, branch, gitEmail, gitName),
-    [plan, repoUrl, branch, gitEmail, gitName]
+    [plan, repoUrl, branch, gitEmail, gitName],
   );
 
   const download = () => {
@@ -58,8 +58,8 @@ export default function ScriptPanel({ plan, theme }: Props) {
         Générateur de script git
       </h3>
       <p className="text-xs mb-3" style={{ color: panel.muted }}>
-        Un script bash téléchargeable. Aucun token ne transite ici — tu exécutes et pushes
-        toi-même.
+        Un script bash téléchargeable. Aucun token ne transite ici — tu exécutes
+        et pushes toi-même.
       </p>
 
       <div className="grid sm:grid-cols-2 gap-2">
@@ -148,9 +148,18 @@ export default function ScriptPanel({ plan, theme }: Props) {
       >
         <p>⚠️ 3 conditions pour que les contributions comptent :</p>
         <ul className="list-disc list-inside pl-2 space-y-0.5">
-          <li>L&apos;email du commit doit correspondre à un email vérifié sur ton compte GitHub.</li>
-          <li>Le dépôt doit être public — ou privé avec « Include private contributions » activé.</li>
-          <li>Il faut réellement pusher : tant que le push n&apos;arrive pas, rien ne s&apos;affiche.</li>
+          <li>
+            L&apos;email du commit doit correspondre à un email vérifié sur ton
+            compte GitHub.
+          </li>
+          <li>
+            Le dépôt doit être public — ou privé avec « Include private
+            contributions » activé.
+          </li>
+          <li>
+            Il faut réellement pusher : tant que le push n&apos;arrive pas, rien
+            ne s&apos;affiche.
+          </li>
         </ul>
       </div>
     </div>

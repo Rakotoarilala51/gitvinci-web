@@ -13,9 +13,7 @@ export default function ThemeToggle({ mode, onChange }: Props) {
       <button
         onClick={() => onChange("light")}
         className={`px-2.5 py-1 text-xs font-semibold transition-colors ${
-          mode === "light"
-            ? "bg-accent text-accent-on"
-            : "text-foreground"
+          mode === "light" ? "bg-accent text-accent-on" : "text-foreground"
         }`}
         aria-pressed={mode === "light"}
       >
@@ -24,9 +22,7 @@ export default function ThemeToggle({ mode, onChange }: Props) {
       <button
         onClick={() => onChange("dark")}
         className={`px-2.5 py-1 text-xs font-semibold transition-colors ${
-          mode === "dark"
-            ? "bg-accent text-accent-on"
-            : "text-foreground"
+          mode === "dark" ? "bg-accent text-accent-on" : "text-foreground"
         }`}
         aria-pressed={mode === "dark"}
       >

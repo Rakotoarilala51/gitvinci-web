@@ -153,11 +153,11 @@ export function textToGrid(
   const font = getFont(fontName);
   const charH = getFontHeight(fontName);
   const spacing = letterSpacing(fontName);
-  const upper = text.toUpperCase();
+  const upper = text.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
 
-  const rawWidth = upper
-    .split("")
-    .reduce((w, ch) => w + (font[ch] ? font[ch][0].length : 0) + spacing, 0);
+  const rawWidth = Math.max(0, [...upper].reduce(
+    (w, ch) => w + (font[ch] ?? font["?"])[0].length + spacing, 0
+  ) - spacing);
 
   const grid: Grid = Array.from({ length: charH }, () =>
     Array.from({ length: rawWidth }, () => 0 as Intensity)

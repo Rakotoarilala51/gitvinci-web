@@ -41,7 +41,7 @@ function writeArts(arts: SavedArt[]): void {
 
 export function encodeGrid(grid: Grid): string {
   let out = "";
-  for (let c = 0; c < 53; c++) {
+  for (let c = 0; c < (grid[0]?.length ?? 0); c++) {
     let col = 0;
     for (let r = 0; r < 7; r++) {
       col |= (grid[r][c] & 7) << (r * 3);
@@ -52,8 +52,8 @@ export function encodeGrid(grid: Grid): string {
 }
 
 export function decodeGrid(encoded: string, length = 53): Grid {
-  const grid = emptyGrid();
-  const cells = Math.max(0, length);
+  const cells = Math.min(54, Math.max(0, length));
+  const grid = emptyGrid(cells);
   for (let c = 0; c < cells && (c + 1) * 5 <= encoded.length; c++) {
     const chunk = encoded.slice(c * 5, c * 5 + 5);
     const col = parseInt(chunk, 32);

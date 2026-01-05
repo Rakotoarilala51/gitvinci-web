@@ -79,7 +79,8 @@ export default function Gallery({
           Galerie
         </h3>
         <span className="text-[11px]" style={{ color: panel.muted }}>
-          {arts.length} motif{arts.length > 1 ? "s" : ""} sauvegardé{arts.length > 1 ? "s" : ""}
+          {arts.length} motif{arts.length > 1 ? "s" : ""} sauvegardé
+          {arts.length > 1 ? "s" : ""}
         </span>
       </div>
 
@@ -134,13 +135,16 @@ export default function Gallery({
                           background: editorColorFor(theme, v),
                         }}
                       />
-                    ))
+                    )),
                   )}
                 </div>
               </button>
               <div className="flex items-center justify-between mt-1.5">
                 <div className="min-w-0">
-                  <div className="text-xs font-medium truncate" style={{ color: panel.text }}>
+                  <div
+                    className="text-xs font-medium truncate"
+                    style={{ color: panel.text }}
+                  >
                     {art.name}
                   </div>
                   <div className="text-[10px]" style={{ color: panel.muted }}>
@@ -159,8 +163,12 @@ export default function Gallery({
         </div>
       )}
       {arts.length === 0 && (
-        <p className="mt-3 text-center text-xs py-4" style={{ color: panel.muted }}>
-          Rien ici pour l&apos;instant. Dessine puis sauvegarde ton premier motif.
+        <p
+          className="mt-3 text-center text-xs py-4"
+          style={{ color: panel.muted }}
+        >
+          Rien ici pour l&apos;instant. Dessine puis sauvegarde ton premier
+          motif.
         </p>
       )}
     </div>

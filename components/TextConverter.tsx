@@ -27,12 +27,10 @@ export default function TextConverter({ year, theme, onPaste }: Props) {
 
   const handlePaste = () => {
     const t = textToGrid(text, fontSize);
-    const out = t.grid.map((row) =>
-      row.map((v) => (v > 0 ? intensity : 0))
-    );
+    const out = t.grid.map((row) => row.map((v) => (v > 0 ? intensity : 0)));
     const xOffset = Math.floor((GRID_COLS - t.width) / 2);
     const full: Grid = Array.from({ length: 7 }, () =>
-      Array.from({ length: GRID_COLS }, () => 0)
+      Array.from({ length: GRID_COLS }, () => 0),
     );
     for (let y = 0; y < out.length; y++) {
       for (let x = 0; x < out[y].length; x++) {
@@ -57,7 +55,9 @@ export default function TextConverter({ year, theme, onPaste }: Props) {
           Texte → pixel art
         </h3>
         <span className={`text-[11px] ${fits ? "text-accent" : "text-danger"}`}>
-          {fits ? `${width} colonnes — ça rentre !` : `${width} colonnes — trop large (max ${GRID_COLS})`}
+          {fits
+            ? `${width} colonnes — ça rentre !`
+            : `${width} colonnes — trop large (max ${GRID_COLS})`}
         </span>
       </div>
 
@@ -131,12 +131,13 @@ export default function TextConverter({ year, theme, onPaste }: Props) {
                   style={{
                     width: 12,
                     height: 12,
-                    background: v > 0
-                      ? editorColorFor(theme, intensity)
-                      : editorColorFor(theme, 0),
+                    background:
+                      v > 0
+                        ? editorColorFor(theme, intensity)
+                        : editorColorFor(theme, 0),
                   }}
                 />
-              ))
+              )),
             )}
           </div>
         </div>

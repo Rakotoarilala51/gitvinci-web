@@ -1390,3 +1390,5 @@ History entry 0676
 History entry 0677
 
 History entry 0678
+
+History entry 0679

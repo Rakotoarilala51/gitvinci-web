@@ -1572,3 +1572,5 @@ History entry 0767
 History entry 0768
 
 History entry 0769
+
+History entry 0770

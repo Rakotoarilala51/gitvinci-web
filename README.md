@@ -3972,3 +3972,5 @@ History entry 1967
 History entry 1968
 
 History entry 1969
+
+History entry 1970

@@ -70,7 +70,7 @@ export default function Home() {
           restoredThresholds = parseThresholds(draft.thresholds);
         }
       }
-    } catch { /* A corrupt or inaccessible draft must not prevent editing. */ }
+    } catch { /* Ignore errors and use defaults. */ }
     // eslint-disable-next-line react-hooks/set-state-in-effect -- restore browser-only persisted state once
     setThresholds(restoredThresholds);
     setYear(restoredYear);

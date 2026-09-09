@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useEffect, useRef, useState } from "react";
 import type { Grid, Intensity, Tool, ThemeMode } from "../lib/types";
@@ -42,6 +43,8 @@ export default function EditorGrid({
   onStrokeEnd,
   disabled,
 }: Props) {
+  const { t } = useTranslation();
+
   const gridRef = useRef(grid);
   const board = useRef<HTMLDivElement>(null);
   const stroke = useRef<{
@@ -140,7 +143,7 @@ export default function EditorGrid({
               ref={board}
               className="calendar-cells"
               role={editable ? "group" : "img"}
-              aria-label={`Calendrier de contributions ${year}`}
+              aria-label={t("calendarLabel", { year })}
               style={{
                 gridTemplateColumns: `repeat(${columns}, ${CELL_SIZE}px)`,
                 gridTemplateRows: `repeat(7, ${CELL_SIZE}px)`,
@@ -164,7 +167,7 @@ export default function EditorGrid({
                 const { x, y } = coordinates(event);
                 if (isCalendarDay(y, x, year))
                   setHovered(
-                    `${dateToKey(cellToDate(y, x, year))} · niveau ${gridRef.current[y]?.[x] ?? 0}`,
+                    t("cellLabel", { date: dateToKey(cellToDate(y, x, year)), level: gridRef.current[y]?.[x] ?? 0 }),
                   );
                 if (stroke.current) {
                   const last = stroke.current.last ?? { x, y };
@@ -196,7 +199,7 @@ export default function EditorGrid({
                   if (!isCalendarDay(y, x, year)) return <span key={key} />;
                   const available = canPaint(y, x, year);
                   const level = grid[y]?.[x] ?? 0;
-                  const label = `${dateToKey(cellToDate(y, x, year))} · niveau ${level}${isFuture(cellToDate(y, x, year)) ? " · date future" : ""}`;
+                  const label = t("cellLabel", { date: dateToKey(cellToDate(y, x, year)), level }) + (isFuture(cellToDate(y, x, year)) ? t(" · date future") : "");
                   const style = {
                     background: colorFor(theme, available ? level : 0),
                   };
@@ -257,18 +260,18 @@ export default function EditorGrid({
         <span aria-live="polite">
           {hovered ??
             (editable
-              ? "Clique-glisse pour dessiner · Flèches et Espace au clavier"
-              : "Calendrier annuel · dates UTC")}
+              ? t("Clique-glisse pour dessiner · Flèches et Espace au clavier")
+              : t("Calendrier annuel · dates UTC"))}
         </span>
         <div className="calendar-legend">
-          <span>Moins</span>
+          <span>{" "}{t("Moins")}{" "}</span>
           {[0, 1, 2, 3, 4].map((level) => (
             <i
               key={level}
               style={{ background: colorFor(theme, level as Intensity) }}
             />
           ))}
-          <span>Plus</span>
+          <span>{" "}{t("Plus")}{" "}</span>
         </div>
       </div>
     </div>

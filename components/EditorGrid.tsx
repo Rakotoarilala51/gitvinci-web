@@ -1,23 +1,17 @@
 "use client";
-import { useTranslation } from "react-i18next";
+import { useGridDrawing } from "../hooks/useGridDrawing";
 
-import { useEffect, useRef, useState } from "react";
 import type { Grid, Intensity, Tool, ThemeMode } from "../lib/types";
 import {
-  calendarColumns,
   canPaint,
   cellToDate,
   dateToKey,
-  floodFill,
-  getMonthLabels,
-  getNextIntensity,
   isCalendarDay,
   isFuture,
 } from "../lib/grid";
 import { colorFor } from "../lib/colors";
 
-export const CELL_SIZE = 12;
-export const CELL_GAP = 3;
+import { CELL_SIZE, CELL_GAP } from "../lib/editor-config";
 
 type Props = {
   grid: Grid;
@@ -43,70 +37,29 @@ export default function EditorGrid({
   onStrokeEnd,
   disabled,
 }: Props) {
-  const { t } = useTranslation();
-
-  const gridRef = useRef(grid);
-  const board = useRef<HTMLDivElement>(null);
-  const stroke = useRef<{
-    changed: boolean;
-    visited: Set<string>;
-    last: { x: number; y: number } | null;
-  } | null>(null);
-  const [focused, setFocused] = useState<string | null>(null);
-  const [hovered, setHovered] = useState<string | null>(null);
-  useEffect(() => {
-    gridRef.current = grid;
-  }, [grid]);
-  const columns = calendarColumns(year);
-  const months = getMonthLabels(year);
-  const editable = !!onEdit && !disabled;
-  const firstDate = Array.from({ length: columns }, (_, x) => x)
-    .flatMap((x) => Array.from({ length: 7 }, (_, y) => ({ x, y })))
-    .find(({ x, y }) => canPaint(y, x, year));
-  const firstKey = firstDate ? `${firstDate.x}-${firstDate.y}` : "";
-  const activeKey = focused ?? firstKey;
-
-  function apply(x: number, y: number) {
-    if (!editable || !canPaint(y, x, year)) return;
-    const key = `${x}-${y}`;
-    const currentStroke = stroke.current;
-    if (currentStroke?.visited.has(key)) return;
-    currentStroke?.visited.add(key);
-    const current = gridRef.current;
-    if (tool === "fill" && currentStroke?.changed) return;
-    const value =
-      tool === "eraser"
-        ? 0
-        : tool === "cycle"
-          ? getNextIntensity(current[y][x], true)
-          : selectedIntensity;
-    if (current[y][x] === value) return;
-    const next =
-      tool === "fill"
-        ? floodFill(current, x, y, value, (cx, cy) => canPaint(cy, cx, year))
-            .grid
-        : current.map((row) => [...row]);
-    if (tool !== "fill") next[y][x] = value;
-    gridRef.current = next;
-    onEdit?.(next, {
-      startStroke: !currentStroke?.changed,
-      intent: tool === "fill" ? "fill" : tool === "cycle" ? "cycle" : "brush",
-    });
-    if (currentStroke) currentStroke.changed = true;
-  }
-
-  function finish() {
-    stroke.current = null;
-    onStrokeEnd?.();
-  }
-
-  function coordinates(event: React.PointerEvent) {
-    const rect = board.current!.getBoundingClientRect();
-    return {
-      x: Math.floor((event.clientX - rect.left) / (CELL_SIZE + CELL_GAP)),
-      y: Math.floor((event.clientY - rect.top) / (CELL_SIZE + CELL_GAP)),
-    };
-  }
+  const {
+    t,
+    board,
+    onPointerDown,
+    onPointerMove,
+    columns,
+    months,
+    editable,
+    activeKey,
+    hovered,
+    setHovered,
+    setFocused,
+    apply,
+    finish,
+  } = useGridDrawing({
+    grid,
+    year,
+    tool,
+    selectedIntensity,
+    disabled,
+    onEdit,
+    onStrokeEnd,
+  });
 
   return (
     <div
@@ -150,44 +103,8 @@ export default function EditorGrid({
                 gap: CELL_GAP,
                 touchAction: editable ? "none" : "auto",
               }}
-              onPointerDown={(event) => {
-                if (!editable || event.button !== 0) return;
-                event.preventDefault();
-                board.current?.setPointerCapture(event.pointerId);
-                stroke.current = {
-                  changed: false,
-                  visited: new Set(),
-                  last: null,
-                };
-                const { x, y } = coordinates(event);
-                apply(x, y);
-                if (stroke.current) stroke.current.last = { x, y };
-              }}
-              onPointerMove={(event) => {
-                const { x, y } = coordinates(event);
-                if (isCalendarDay(y, x, year))
-                  setHovered(
-                    t("cellLabel", { date: dateToKey(cellToDate(y, x, year)), level: gridRef.current[y]?.[x] ?? 0 }),
-                  );
-                if (stroke.current) {
-                  const last = stroke.current.last ?? { x, y };
-                  const steps = Math.max(
-                    Math.abs(x - last.x),
-                    Math.abs(y - last.y),
-                  );
-                  for (let i = 1; i <= Math.max(1, steps); i++) {
-                    apply(
-                      Math.round(
-                        last.x + ((x - last.x) * i) / Math.max(1, steps),
-                      ),
-                      Math.round(
-                        last.y + ((y - last.y) * i) / Math.max(1, steps),
-                      ),
-                    );
-                  }
-                  stroke.current.last = { x, y };
-                }
-              }}
+              onPointerDown={onPointerDown}
+              onPointerMove={onPointerMove}
               onPointerUp={finish}
               onPointerCancel={finish}
               onLostPointerCapture={finish}
@@ -199,7 +116,14 @@ export default function EditorGrid({
                   if (!isCalendarDay(y, x, year)) return <span key={key} />;
                   const available = canPaint(y, x, year);
                   const level = grid[y]?.[x] ?? 0;
-                  const label = t("cellLabel", { date: dateToKey(cellToDate(y, x, year)), level }) + (isFuture(cellToDate(y, x, year)) ? t(" · date future") : "");
+                  const label =
+                    t("cellLabel", {
+                      date: dateToKey(cellToDate(y, x, year)),
+                      level,
+                    }) +
+                    (isFuture(cellToDate(y, x, year))
+                      ? t(" · date future")
+                      : "");
                   const style = {
                     background: colorFor(theme, available ? level : 0),
                   };
@@ -264,14 +188,14 @@ export default function EditorGrid({
               : t("Calendrier annuel · dates UTC"))}
         </span>
         <div className="calendar-legend">
-          <span>{" "}{t("Moins")}{" "}</span>
+          <span>{t("Moins")}</span>
           {[0, 1, 2, 3, 4].map((level) => (
             <i
               key={level}
               style={{ background: colorFor(theme, level as Intensity) }}
             />
           ))}
-          <span>{" "}{t("Plus")}{" "}</span>
+          <span>{t("Plus")}</span>
         </div>
       </div>
     </div>

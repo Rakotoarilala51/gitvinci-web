@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useEffect, useState } from "react";
 import type { Grid, SavedArt, ThemeMode, ThresholdConfig } from "../lib/types";
@@ -22,6 +23,9 @@ export default function Gallery({
   onLoad,
   onSaveNotification,
 }: Props) {
+  const { t, i18n } = useTranslation();
+  void i18n;
+
   const [arts, setArts] = useState<SavedArt[]>([]);
   const [name, setName] = useState("");
   const [saved, setSaved] = useState<SavedArt | null>(null);
@@ -35,7 +39,7 @@ export default function Gallery({
   const handleSave = () => {
     const art: SavedArt = {
       id: crypto.randomUUID(),
-      name: name.trim() || "Sans titre",
+      name: name.trim() || t("Sans titre"),
       grid: grid.map((r) => [...r]),
       year,
       thresholds: { ...thresholds },
@@ -51,7 +55,7 @@ export default function Gallery({
     setArts(next);
     setSaved(art);
     setName("");
-    onSaveNotification?.("Motif enregistré dans la galerie !");
+    onSaveNotification?.(t("Motif enregistré dans la galerie !"));
   };
 
   const handleDelete = (id: string) => {
@@ -63,7 +67,7 @@ export default function Gallery({
   const handleLoad = (art: SavedArt) => {
     onLoad(art);
     setSaved(art);
-    onSaveNotification?.(`« ${art.name} » chargé.`);
+    onSaveNotification?.(t("loadedPattern", { name: art.name }));
   };
 
   const input =
@@ -75,12 +79,9 @@ export default function Gallery({
       style={{ background: panel.card, borderColor: panel.border }}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold" style={{ color: panel.text }}>
-          Galerie
-        </h3>
+        <h3 className="text-sm font-semibold" style={{ color: panel.text }}>{" "}{t("Galerie")}{" "}</h3>
         <span className="text-[11px]" style={{ color: panel.muted }}>
-          {arts.length} motif{arts.length > 1 ? "s" : ""} sauvegardé
-          {arts.length > 1 ? "s" : ""}
+          {t("savedPatterns", { count: arts.length })}
         </span>
       </div>
 
@@ -88,7 +89,7 @@ export default function Gallery({
         <input
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Nom du motif…"
+          placeholder={t("Nom du motif…")}
           className={input}
           style={{ borderColor: panel.border, color: panel.text }}
           onKeyDown={(e) => {
@@ -99,7 +100,7 @@ export default function Gallery({
           onClick={handleSave}
           className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-on transition-colors hover:bg-accent shrink-0"
         >
-          {saved ? "Mettre à jour" : "Sauvegarder"}
+          {saved ? t("Mettre à jour") : t("Sauvegarder")}
         </button>
       </div>
 
@@ -114,7 +115,7 @@ export default function Gallery({
               <button
                 onClick={() => handleLoad(art)}
                 className="block w-full overflow-x-auto"
-                title="Charger ce motif"
+                title={t("Charger ce motif")}
               >
                 <div
                   className="grid gap-[2px] mx-auto"
@@ -148,15 +149,13 @@ export default function Gallery({
                     {art.name}
                   </div>
                   <div className="text-[10px]" style={{ color: panel.muted }}>
-                    {art.year} · {new Date(art.createdAt).toLocaleDateString()}
+                    {art.year} · {new Date(art.createdAt).toLocaleDateString(i18n.resolvedLanguage)}
                   </div>
                 </div>
                 <button
                   onClick={() => handleDelete(art.id)}
                   className="text-xs px-2 py-1 rounded hover:bg-danger/10 text-danger"
-                >
-                  Suppr.
-                </button>
+                >{" "}{t("Suppr.")}{" "}</button>
               </div>
             </div>
           ))}
@@ -166,10 +165,7 @@ export default function Gallery({
         <p
           className="mt-3 text-center text-xs py-4"
           style={{ color: panel.muted }}
-        >
-          Rien ici pour l&apos;instant. Dessine puis sauvegarde ton premier
-          motif.
-        </p>
+        >{" "}{t("Rien ici pour l'instant. Dessine puis sauvegarde ton premier motif.")}{" "}</p>
       )}
     </div>
   );

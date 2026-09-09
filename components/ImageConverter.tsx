@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useRef, useState } from "react";
 import type { Grid, Intensity, ThemeMode } from "../lib/types";
@@ -16,6 +17,8 @@ type Thresholds = [number, number, number, number];
 const DEFAULT_THRESHOLDS: Thresholds = [0.85, 0.7, 0.5, 0.3];
 
 export default function ImageConverter({ year, theme, onPaste }: Props) {
+  const { t } = useTranslation();
+
   const [preview, setPreview] = useState<Grid | null>(null);
   const [fileName, setFileName] = useState<string | null>(null);
   const [invert, setInvert] = useState(false);
@@ -68,12 +71,8 @@ export default function ImageConverter({ year, theme, onPaste }: Props) {
       style={{ background: panel.card, borderColor: panel.border }}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold" style={{ color: panel.text }}>
-          Image → motif
-        </h3>
-        <span className="text-[11px]" style={{ color: panel.muted }}>
-          Seuillage de luminosité
-        </span>
+        <h3 className="text-sm font-semibold" style={{ color: panel.text }}>{" "}{t("Image → motif")}{" "}</h3>
+        <span className="text-[11px]" style={{ color: panel.muted }}>{" "}{t("Seuillage de luminosité")}{" "}</span>
       </div>
 
       <input
@@ -91,7 +90,7 @@ export default function ImageConverter({ year, theme, onPaste }: Props) {
         className="w-full rounded-lg border-2 border-dashed px-4 py-4 text-sm transition-colors hover:border-accent"
         style={{ borderColor: panel.border, color: panel.muted }}
       >
-        {fileName ? `📷 ${fileName}` : "📁 Choisir une image (PNG, JPG…)"}
+        {fileName ? `📷 ${fileName}` : t("📁 Choisir une image (PNG, JPG…)")}
       </button>
 
       {preview && (
@@ -109,9 +108,7 @@ export default function ImageConverter({ year, theme, onPaste }: Props) {
                   setTimeout(reprocess, 0);
                 }}
                 className="accent-accent"
-              />
-              Inverser
-            </label>
+              />{" "}{t("Inverser")}{" "}</label>
             <div
               className="flex items-center gap-1 text-xs"
               style={{ color: panel.text }}
@@ -139,8 +136,7 @@ export default function ImageConverter({ year, theme, onPaste }: Props) {
             <button
               onClick={handlePaste}
               className="ml-auto rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-accent-on transition-colors hover:bg-accent"
-            >
-              Ajouter au motif ({year})
+            >{" "}{t("Ajouter au motif (")}{" "}{year})
             </button>
           </div>
 

@@ -52,7 +52,9 @@ export default function ShareModal({
         <h3
           className="text-base font-semibold mb-3"
           style={{ color: panel.text }}
-        >{" "}{t("Partager ce motif")}{" "}</h3>
+        >
+          {t("Partager ce motif")}
+        </h3>
 
         <div
           className="grid gap-[2px] rounded-lg border p-3 mb-3 justify-start overflow-x-auto"
@@ -101,13 +103,19 @@ export default function ShareModal({
           </button>
         </div>
 
-        <p className="mt-3 text-[11px]" style={{ color: panel.muted }}>{" "}{t("Le lien embarque tout le motif — tu peux l'envoyer à n'importe qui, il s'affichera directement dans l'éditeur.")}{" "}</p>
+        <p className="mt-3 text-[11px]" style={{ color: panel.muted }}>
+          {t(
+            "Le lien embarque tout le motif — tu peux l'envoyer à n'importe qui, il s'affichera directement dans l'éditeur.",
+          )}
+        </p>
 
         <button
           onClick={onClose}
           className="mt-4 w-full rounded-lg border py-2 text-sm font-semibold hover:bg-accent/10 transition-colors"
           style={{ color: panel.text, borderColor: panel.border }}
-        >{" "}{t("Fermer")}{" "}</button>
+        >
+          {t("Fermer")}
+        </button>
       </div>
     </div>
   );

@@ -85,22 +85,39 @@ npm run build
 
 Les brouillons sont sauvegardés dans le `localStorage` du navigateur. Un motif partagé est encodé dans l'URL avec son année et ses paramètres d'intensité.
 
-## Structure du projet
+## Architecture
 
 ```text
-app/          Page principale et styles globaux
-components/   Éditeur, outils, galerie, partage et panneaux de configuration
-data/         Templates de motifs
-lib/          Grille, couleurs, polices, stockage et génération de scripts
-public/       Ressources statiques
-tests/        Tests automatisés
+app/                 Layout, providers et composition de la page
+components/          Composants d’interface
+components/studio/   Présentation du studio et de son introduction
+hooks/               État et interactions React
+lib/                 Fonctions métier, stockage, export et configuration
+data/                Templates, outils et bitmaps des polices
+locales/             Dictionnaires FR / EN
+styles/              Styles organisés par zone, importés dans globals.css
+public/              Ressources statiques
+tests/               Tests du calendrier, des motifs, du stockage et de l’historique
 ```
+
+- **useEditor** coordonne le document actif, les textes, les années et les décalages.
+- **useGridHistory** utilise un reducer pur : un geste de dessin correspond à une étape d’annulation, avec un maximum de 60 étapes.
+- **useGridDrawing** gère les gestes de dessin et l’interpolation entre les cellules.
+- **useEditorShortcuts**, **useGallery**, **useImageImport** et **useNotification** isolent leurs interactions et nettoient leurs ressources.
+- **lib/draft.ts** restaure un document depuis un lien ou un brouillon local ; **lib/commit-export.ts** produit les sorties texte et CSV.
+- Les composants reçoivent des données et des actions nommées. Les règles métier testables restent dans `lib/`, sans dépendance à React.
+- `LanguageProvider` crée une instance i18next par montage ; la configuration et les ressources sont centralisées dans `lib/i18n.ts`.
+
+Le dossier voisin `gitvinci-server` est un squelette NestJS indépendant, sans intégration requise par cet éditeur. Les fonctionnalités actuelles s’exécutent dans le frontend.
 
 ## Commandes disponibles
 
 | Commande | Description |
 | --- | --- |
 | `npm run dev` | Lance le serveur de développement |
+| `npm run format` | Formate les sources avec Prettier |
+| `npm run format:check` | Vérifie le formatage sans modifier les fichiers |
+| `npm run typecheck` | Vérifie les types TypeScript |
 | `npm run lint` | Vérifie le code avec ESLint |
 | `npm test` | Exécute les tests Node.js |
 | `npm run build` | Compile l'application de production |

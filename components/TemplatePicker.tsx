@@ -26,12 +26,17 @@ export default function TemplatePicker({
       <div className="section-heading">
         <div>
           <span className="step-number">▦</span>
-          <h2 id="templates-title">{" "}{t("Un motif pour commencer")}{" "}</h2>
+          <h2 id="templates-title">{t("Un motif pour commencer")}</h2>
         </div>
         <span className="eyebrow">
-          {TEMPLATES.length}{" "}{t("TEMPLATES À PERSONNALISER")}{" "}</span>
+          {TEMPLATES.length} {t("TEMPLATES À PERSONNALISER")}
+        </span>
       </div>
-      <p className="section-description">{" "}{t("Choisis un modèle, puis fais-le tien dans l’éditeur. Chaque modèle remplace le dessin actuel ; tu peux annuler.")}{" "}</p>
+      <p className="section-description">
+        {t(
+          "Choisis un modèle, puis fais-le tien dans l’éditeur. Chaque modèle remplace le dessin actuel ; tu peux annuler.",
+        )}
+      </p>
       <div className="template-cards">
         {TEMPLATES.map((template, index) => {
           const pattern = template.build(year);
@@ -43,11 +48,14 @@ export default function TemplatePicker({
               className={`template-card ${selected === template.name ? "template-selected" : ""}`}
             >
               <div className="template-card-top">
-                <span className="eyebrow">{" "}{t("MODÈLE")}{" "}{String(index + 1).padStart(2, "0")}
+                <span className="eyebrow">
+                  {t("MODÈLE")} {String(index + 1).padStart(2, "0")}
                 </span>
                 <span>
                   {template.placement === "calendar"
-                    ? t("days", { count: pattern.flat().filter(Boolean).length })
+                    ? t("days", {
+                        count: pattern.flat().filter(Boolean).length,
+                      })
                     : `${pattern[0].length} × ${pattern.length}`}
                 </span>
               </div>
@@ -81,14 +89,12 @@ export default function TemplatePicker({
                   if (!next) return;
                   setSelected(template.name);
                   onPaste(next);
-                  document
-                    .getElementById("editor")
-                    ?.scrollIntoView({
-                      behavior: matchMedia("(prefers-reduced-motion: reduce)")
-                        .matches
-                        ? "instant"
-                        : "smooth",
-                    });
+                  document.getElementById("editor")?.scrollIntoView({
+                    behavior: matchMedia("(prefers-reduced-motion: reduce)")
+                      .matches
+                      ? "instant"
+                      : "smooth",
+                  });
                 }}
               >
                 {fits ? t("Utiliser ce modèle ↗") : t("Période trop courte")}

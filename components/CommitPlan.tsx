@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import type { CommitEntry, ThresholdConfig } from "../lib/types";
 import { countCommits, isFuture } from "../lib/grid";
@@ -12,6 +13,8 @@ export default function CommitPlan({
   thresholds: ThresholdConfig;
   onThresholdsChange: (value: ThresholdConfig) => void;
 }) {
+  const { t } = useTranslation();
+
   const [feedback, setFeedback] = useState("");
   const dateLabel = (date: string) => date.split("-").reverse().join("-");
   const output = plan
@@ -42,22 +45,17 @@ export default function CommitPlan({
       <div className="section-heading">
         <div>
           <span className="step-number">▤</span>
-          <h2 id="commit-title">Les commits, jour par jour</h2>
+          <h2 id="commit-title">{" "}{t("Les commits, jour par jour")}{" "}</h2>
         </div>
         <span className="eyebrow">
-          {plan.length} JOURS · {countCommits(plan)} COMMITS PRÉVUS
-        </span>
+          {plan.length}{" "}{t("JOURS ·")}{" "}{countCommits(plan)}{" "}{t("COMMITS PRÉVUS")}{" "}</span>
       </div>
-      <p className="section-description">
-        Chaque niveau correspond au nombre de commits ci-dessous. Le
-        récapitulatif suit ton dessin et ses décalages, dates futures comprises.
-      </p>
+      <p className="section-description">{" "}{t("Chaque niveau correspond au nombre de commits ci-dessous. Le récapitulatif suit ton dessin et ses décalages, dates futures comprises.")}{" "}</p>
       <div className="commit-thresholds">
         {(["l1", "l2", "l3", "l4"] as const).map((key, index) => (
-          <label key={key}>
-            Niveau {index + 1}
+          <label key={key}>{" "}{t("Niveau")}{" "}{index + 1}
             <select
-              aria-label={`Commits pour le niveau ${index + 1}`}
+              aria-label={t("levelCommits", { level: index + 1 })}
               value={thresholds[key]}
               onChange={(event) =>
                 onThresholdsChange({
@@ -75,10 +73,7 @@ export default function CommitPlan({
           </label>
         ))}
       </div>
-      <p className="editor-help">
-        Ces paliers définissent ton plan ; les nuances réelles de GitHub
-        dépendent de l’activité du profil.
-      </p>
+      <p className="editor-help">{" "}{t("Ces paliers définissent ton plan ; les nuances réelles de GitHub dépendent de l’activité du profil.")}{" "}</p>
       <div className="commit-actions">
         <button
           type="button"
@@ -87,34 +82,28 @@ export default function CommitPlan({
           onClick={async () => {
             try {
               await navigator.clipboard.writeText(output);
-              setFeedback("Récapitulatif copié.");
+              setFeedback(t("Récapitulatif copié."));
             } catch {
-              setFeedback("Copie indisponible. Tu peux télécharger le CSV.");
+              setFeedback(t("Copie indisponible. Tu peux télécharger le CSV."));
             }
           }}
-        >
-          Copier les dates
-        </button>
+        >{" "}{t("Copier les dates")}{" "}</button>
         <button
           type="button"
           className="tool-button"
           disabled={!plan.length}
           onClick={download}
-        >
-          Télécharger le CSV
-        </button>
+        >{" "}{t("Télécharger le CSV")}{" "}</button>
         <span role="status">{feedback}</span>
       </div>
       <div className="commit-table">
         <table>
-          <caption className="sr-only">
-            Nombre de commits à prévoir par date, en UTC
-          </caption>
+          <caption className="sr-only">{" "}{t("Nombre de commits à prévoir par date, en UTC")}{" "}</caption>
           <thead>
             <tr>
-              <th scope="col">Date (JJ-MM-AAAA)</th>
-              <th scope="col">Commits à prévoir</th>
-              <th scope="col">Période</th>
+              <th scope="col">{" "}{t("Date (JJ-MM-AAAA)")}{" "}</th>
+              <th scope="col">{" "}{t("Commits à prévoir")}{" "}</th>
+              <th scope="col">{" "}{t("Période")}{" "}</th>
             </tr>
           </thead>
           <tbody>
@@ -126,17 +115,14 @@ export default function CommitPlan({
                 </td>
                 <td>
                   {isFuture(new Date(entry.date + "T00:00:00Z"))
-                    ? "À venir"
-                    : "Passée / aujourd’hui"}
+                    ? t("À venir")
+                    : t("Passée / aujourd’hui")}
                 </td>
               </tr>
             ))}
             {!plan.length && (
               <tr>
-                <td colSpan={3}>
-                  Dessine ou choisis un template pour obtenir les dates et les
-                  quantités.
-                </td>
+                <td colSpan={3}>{" "}{t("Dessine ou choisis un template pour obtenir les dates et les quantités.")}{" "}</td>
               </tr>
             )}
           </tbody>

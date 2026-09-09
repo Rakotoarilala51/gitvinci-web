@@ -1,9 +1,8 @@
 "use client";
 import { useTranslation } from "react-i18next";
 
-import { useEffect, useState } from "react";
+import { useGallery } from "../hooks/useGallery";
 import type { Grid, SavedArt, ThemeMode, ThresholdConfig } from "../lib/types";
-import { loadArts, saveArt, deleteArt } from "../lib/storage";
 import { editorColorFor, themePanelColors } from "../lib/colors";
 
 type Props = {
@@ -24,51 +23,10 @@ export default function Gallery({
   onSaveNotification,
 }: Props) {
   const { t, i18n } = useTranslation();
-  void i18n;
 
-  const [arts, setArts] = useState<SavedArt[]>([]);
-  const [name, setName] = useState("");
-  const [saved, setSaved] = useState<SavedArt | null>(null);
+  const { arts, name, saved, setName, handleSave, handleDelete, handleLoad } =
+    useGallery({ grid, year, thresholds, onLoad, onSaveNotification });
   const panel = themePanelColors(theme);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect -- one-time hydration from localStorage
-    setArts(loadArts());
-  }, []);
-
-  const handleSave = () => {
-    const art: SavedArt = {
-      id: crypto.randomUUID(),
-      name: name.trim() || t("Sans titre"),
-      grid: grid.map((r) => [...r]),
-      year,
-      thresholds: { ...thresholds },
-      createdAt: new Date().toISOString(),
-      monthLabels: [],
-    };
-    let next: SavedArt[];
-    if (saved) {
-      next = saveArt({ ...art, id: saved.id });
-    } else {
-      next = saveArt(art);
-    }
-    setArts(next);
-    setSaved(art);
-    setName("");
-    onSaveNotification?.(t("Motif enregistré dans la galerie !"));
-  };
-
-  const handleDelete = (id: string) => {
-    const next = deleteArt(id);
-    setArts(next);
-    if (saved?.id === id) setSaved(null);
-  };
-
-  const handleLoad = (art: SavedArt) => {
-    onLoad(art);
-    setSaved(art);
-    onSaveNotification?.(t("loadedPattern", { name: art.name }));
-  };
 
   const input =
     "flex-1 rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-accent";
@@ -79,7 +37,9 @@ export default function Gallery({
       style={{ background: panel.card, borderColor: panel.border }}
     >
       <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold" style={{ color: panel.text }}>{" "}{t("Galerie")}{" "}</h3>
+        <h3 className="text-sm font-semibold" style={{ color: panel.text }}>
+          {t("Galerie")}
+        </h3>
         <span className="text-[11px]" style={{ color: panel.muted }}>
           {t("savedPatterns", { count: arts.length })}
         </span>
@@ -149,13 +109,18 @@ export default function Gallery({
                     {art.name}
                   </div>
                   <div className="text-[10px]" style={{ color: panel.muted }}>
-                    {art.year} · {new Date(art.createdAt).toLocaleDateString(i18n.resolvedLanguage)}
+                    {art.year} ·{" "}
+                    {new Date(art.createdAt).toLocaleDateString(
+                      i18n.resolvedLanguage,
+                    )}
                   </div>
                 </div>
                 <button
                   onClick={() => handleDelete(art.id)}
                   className="text-xs px-2 py-1 rounded hover:bg-danger/10 text-danger"
-                >{" "}{t("Suppr.")}{" "}</button>
+                >
+                  {t("Suppr.")}
+                </button>
               </div>
             </div>
           ))}
@@ -165,7 +130,11 @@ export default function Gallery({
         <p
           className="mt-3 text-center text-xs py-4"
           style={{ color: panel.muted }}
-        >{" "}{t("Rien ici pour l'instant. Dessine puis sauvegarde ton premier motif.")}{" "}</p>
+        >
+          {t(
+            "Rien ici pour l'instant. Dessine puis sauvegarde ton premier motif.",
+          )}
+        </p>
       )}
     </div>
   );

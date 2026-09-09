@@ -10,22 +10,46 @@ Utilise Gitvinci directement sur [gitvinci-web.vercel.app](https://gitvinci-web.
 
 ## Fonctionnalités
 
-- Édition interactive d'un calendrier annuel de 53 colonnes sur 7 lignes.
+- Édition d’un calendrier annuel daté en UTC : sept lignes, 53 ou 54 colonnes selon l’année, jours hors année masqués et dates futures éditables.
 - Pinceau, gomme, remplissage, changement d'intensité et annulation/rétablissement.
-- Conversion de texte en pixel art avec des polices bitmap `5x7` et `7x9`.
+- Conversion de texte en pixel art en direct dans l’éditeur avec une police bitmap `5x7`.
 - Import d'une image et conversion en grille de pixels.
-- Templates prêts à utiliser et galerie de motifs sauvegardés.
+- 16 templates prêts à utiliser et galerie de motifs sauvegardés.
 - Réglage des seuils d'intensité pour le plan de commits.
 - Décalage horizontal d'un motif sans perdre les pixels valides.
 - Prévisualisation et partage d'un motif par URL.
-- Export d'un plan de commits et d'un script Git.
+- Récapitulatif des commits par date (`JJ-MM-AAAA`), copie et téléchargement CSV.
 - Thème clair et sombre.
+
+## Templates
+
+- **Langages** : C++, Python, JavaScript, TypeScript, Java et Rust.
+- **Arcade et symboles** : Batman, Space Invader, Cœur, Sourire, Musique et Ghost.
+- **Messages** : HIRE ME!, SAY HI et CODE.
+- **No-life** : tous les jours de l’année au niveau maximal, même le 29 février.
+
+Les logos sont des interprétations pixel adaptées aux sept lignes du calendrier et aux intensités de contributions. Chaque carte applique le motif à l’année sélectionnée ; le remplacement est annulable.
+
+## Raccourcis de l’éditeur
+
+| Action | Raccourci |
+| --- | --- |
+| Pinceau | B |
+| Gomme | E |
+| Remplissage | F |
+| Cycle d’intensité | C |
+| Annuler | Ctrl / ⌘ Z |
+| Rétablir | Ctrl / ⌘ Maj Z |
+| Naviguer dans la grille | Flèches |
+| Peindre la case sélectionnée | Espace |
+
+Les boutons Gauche et Droite déplacent le motif d’une colonne (sept jours). Une direction se désactive si le déplacement ferait sortir des pixels de l’année.
 
 ## Démarrage rapide
 
 ### Prérequis
 
-- Node.js 20 ou une version plus récente.
+- Node.js 20.9 minimum (Node.js 22 utilisé pour les vérifications du projet).
 - npm.
 
 ### Installation
@@ -57,8 +81,7 @@ npm run build
 3. Utilise le champ texte pour placer un message en pixel art.
 4. Importe une image si nécessaire et ajuste son rendu.
 5. Configure les seuils d'intensité dans le plan de commits.
-6. Télécharge le plan ou le script Git généré.
-7. Vérifie le script avant de l'exécuter dans le dépôt cible.
+6. Consulte les quantités de commits par jour, puis copie le récapitulatif ou télécharge le CSV.
 
 Les brouillons sont sauvegardés dans le `localStorage` du navigateur. Un motif partagé est encodé dans l'URL avec son année et ses paramètres d'intensité.
 
@@ -85,4 +108,4 @@ tests/        Tests automatisés
 
 ## Notes
 
-Gitvinci n'est pas affilié à GitHub. L'application génère des données et des scripts que tu peux examiner avant toute utilisation. Elle ne crée ni ne pousse automatiquement de commits sur un dépôt GitHub.
+Gitvinci n'est pas affilié à GitHub. L’application prépare un plan de commits ; les paliers sont configurables et les nuances réelles de GitHub dépendent de l’activité du profil. Elle ne crée ni ne pousse automatiquement de commits sur un dépôt GitHub.

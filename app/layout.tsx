@@ -32,7 +32,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="fr"
       className={`${inter.variable} ${pixel.variable} ${mono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col"><LanguageProvider>{children}</LanguageProvider></body>
+      <body className="min-h-full flex flex-col">
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }

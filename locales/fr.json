@@ -123,5 +123,7 @@
   "days_other": "{{count}} jours",
   "savedPatterns_one": "{{count}} motif sauvegardé",
   "savedPatterns_other": "{{count}} motifs sauvegardés",
-  "loadedPattern": "« {{name}} » chargé."
+  "loadedPattern": "« {{name}} » chargé.",
+  "imageError": "Impossible de lire cette image. Choisis un autre fichier.",
+  "imageLoading": "Conversion de l’image…"
 }

@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import type { Grid, ThemeMode } from "../lib/types";
 import { TEMPLATES, buildTemplate } from "../data/templates";
@@ -13,6 +14,8 @@ export default function TemplatePicker({
   year: number;
   onPaste: (grid: Grid) => void;
 }) {
+  const { t } = useTranslation();
+
   const [selected, setSelected] = useState<string | null>(null);
   return (
     <section
@@ -23,16 +26,12 @@ export default function TemplatePicker({
       <div className="section-heading">
         <div>
           <span className="step-number">▦</span>
-          <h2 id="templates-title">Un motif pour commencer</h2>
+          <h2 id="templates-title">{" "}{t("Un motif pour commencer")}{" "}</h2>
         </div>
         <span className="eyebrow">
-          {TEMPLATES.length} TEMPLATES À PERSONNALISER
-        </span>
+          {TEMPLATES.length}{" "}{t("TEMPLATES À PERSONNALISER")}{" "}</span>
       </div>
-      <p className="section-description">
-        Choisis un modèle, puis fais-le tien dans l’éditeur. Chaque modèle
-        remplace le dessin actuel ; tu peux annuler.
-      </p>
+      <p className="section-description">{" "}{t("Choisis un modèle, puis fais-le tien dans l’éditeur. Chaque modèle remplace le dessin actuel ; tu peux annuler.")}{" "}</p>
       <div className="template-cards">
         {TEMPLATES.map((template, index) => {
           const pattern = template.build(year);
@@ -44,12 +43,11 @@ export default function TemplatePicker({
               className={`template-card ${selected === template.name ? "template-selected" : ""}`}
             >
               <div className="template-card-top">
-                <span className="eyebrow">
-                  MODÈLE {String(index + 1).padStart(2, "0")}
+                <span className="eyebrow">{" "}{t("MODÈLE")}{" "}{String(index + 1).padStart(2, "0")}
                 </span>
                 <span>
                   {template.placement === "calendar"
-                    ? `${pattern.flat().filter(Boolean).length} jours`
+                    ? t("days", { count: pattern.flat().filter(Boolean).length })
                     : `${pattern[0].length} × ${pattern.length}`}
                 </span>
               </div>
@@ -73,8 +71,8 @@ export default function TemplatePicker({
                   )}
                 </svg>
               </div>
-              <h3>{template.name}</h3>
-              <p>{template.description}</p>
+              <h3>{t(template.name)}</h3>
+              <p>{t(template.description)}</p>
               <button
                 type="button"
                 className="template-use"
@@ -93,7 +91,7 @@ export default function TemplatePicker({
                     });
                 }}
               >
-                {fits ? "Utiliser ce modèle ↗" : "Période trop courte"}
+                {fits ? t("Utiliser ce modèle ↗") : t("Période trop courte")}
               </button>
             </article>
           );

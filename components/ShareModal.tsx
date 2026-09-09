@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useState } from "react";
 import type { Grid, ThemeMode, ThresholdConfig } from "../lib/types";
@@ -22,6 +23,8 @@ export default function ShareModal({
   theme,
   onClose,
 }: Props) {
+  const { t } = useTranslation();
+
   const [copied, setCopied] = useState(false);
   const panel = themePanelColors(theme);
   const url = buildShareUrl(id, grid, year, thresholds);
@@ -49,9 +52,7 @@ export default function ShareModal({
         <h3
           className="text-base font-semibold mb-3"
           style={{ color: panel.text }}
-        >
-          Partager ce motif
-        </h3>
+        >{" "}{t("Partager ce motif")}{" "}</h3>
 
         <div
           className="grid gap-[2px] rounded-lg border p-3 mb-3 justify-start overflow-x-auto"
@@ -96,23 +97,17 @@ export default function ShareModal({
             onClick={copy}
             className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-accent-on hover:bg-accent"
           >
-            {copied ? "✓ Copié" : "Copier"}
+            {copied ? t("✓ Copié") : t("Copier")}
           </button>
         </div>
 
-        <p className="mt-3 text-[11px]" style={{ color: panel.muted }}>
-          Le lien embarque tout le motif — tu peux l&apos;envoyer à
-          n&apos;importe qui, il s&apos;affichera directement dans
-          l&apos;éditeur.
-        </p>
+        <p className="mt-3 text-[11px]" style={{ color: panel.muted }}>{" "}{t("Le lien embarque tout le motif — tu peux l'envoyer à n'importe qui, il s'affichera directement dans l'éditeur.")}{" "}</p>
 
         <button
           onClick={onClose}
           className="mt-4 w-full rounded-lg border py-2 text-sm font-semibold hover:bg-accent/10 transition-colors"
           style={{ color: panel.text, borderColor: panel.border }}
-        >
-          Fermer
-        </button>
+        >{" "}{t("Fermer")}{" "}</button>
       </div>
     </div>
   );

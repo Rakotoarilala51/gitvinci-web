@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useEffect } from "react";
 import type { Tool, ThemeMode } from "../lib/types";
@@ -63,6 +64,8 @@ function Icon({ path }: { path: string }) {
   );
 }
 export default function Toolbar(props: Props) {
+  const { t } = useTranslation();
+
   const {
     tool,
     setTool,
@@ -115,7 +118,7 @@ export default function Toolbar(props: Props) {
 
   return (
     <div className="editor-tool-groups">
-      <div className="tool-group" role="group" aria-label="Outils de dessin">
+      <div className="tool-group" role="group" aria-label={t("Outils de dessin")}>
         {tools.map((item) => (
           <button
             type="button"
@@ -123,68 +126,58 @@ export default function Toolbar(props: Props) {
             disabled={disabled}
             className="tool-button"
             aria-pressed={tool === item.id}
-            title={`${item.label} (${item.shortcut})`}
+            title={`${t(item.label)} (${item.shortcut})`}
             onClick={() => setTool(item.id)}
           >
             <Icon path={item.path} />
-            <span>{item.label}</span>
+            <span>{t(item.label)}</span>
             <kbd>{item.shortcut}</kbd>
           </button>
         ))}
       </div>
-      <div className="tool-group" role="group" aria-label="Historique">
+      <div className="tool-group" role="group" aria-label={t("Historique")}>
         <button
           type="button"
           className="tool-button"
           disabled={disabled || !canUndo}
           onClick={onUndo}
-          title="Annuler (Ctrl / ⌘ Z)"
+          title={t("Annuler (Ctrl / ⌘ Z)")}
         >
-          <Icon path="M9 4 3 10l6 6M3 10h11a7 7 0 0 1 7 7v3" />
-          Annuler
-        </button>
+          <Icon path="M9 4 3 10l6 6M3 10h11a7 7 0 0 1 7 7v3" />{" "}{t("Annuler")}{" "}</button>
         <button
           type="button"
           className="tool-button"
           disabled={disabled || !canRedo}
           onClick={onRedo}
-          title="Rétablir (Ctrl / ⌘ Maj Z)"
+          title={t("Rétablir (Ctrl / ⌘ Maj Z)")}
         >
-          <Icon path="m15 4 6 6-6 6M21 10H10a7 7 0 0 0-7 7v3" />
-          Rétablir
-        </button>
+          <Icon path="m15 4 6 6-6 6M21 10H10a7 7 0 0 0-7 7v3" />{" "}{t("Rétablir")}{" "}</button>
         <button
           type="button"
           className="tool-button tool-danger"
           disabled={disabled || !canClear}
           onClick={onClear}
-          title="Effacer tout le motif (annulable)"
+          title={t("Effacer tout le motif (annulable)")}
         >
-          <Icon path="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7" />
-          Vider
-        </button>
+          <Icon path="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7" />{" "}{t("Vider")}{" "}</button>
       </div>
-      <div className="tool-group" role="group" aria-label="Décaler le motif">
+      <div className="tool-group" role="group" aria-label={t("Décaler le motif")}>
         <button
           type="button"
           className="tool-button"
           disabled={disabled || !canShiftLeft}
           onClick={() => onShift(-1)}
-          title="Décaler d’une colonne à gauche (−7 jours)"
+          title={t("Décaler d’une colonne à gauche (−7 jours)")}
         >
-          <Icon path="m10 5-7 7 7 7M3 12h18" />
-          Gauche
-        </button>
+          <Icon path="m10 5-7 7 7 7M3 12h18" />{" "}{t("Gauche")}{" "}</button>
         <button
           type="button"
           className="tool-button"
           disabled={disabled || !canShiftRight}
           onClick={() => onShift(1)}
-          title="Décaler d’une colonne à droite (+7 jours)"
+          title={t("Décaler d’une colonne à droite (+7 jours)")}
         >
-          <Icon path="m14 5 7 7-7 7M21 12H3" />
-          Droite
-        </button>
+          <Icon path="m14 5 7 7-7 7M21 12H3" />{" "}{t("Droite")}{" "}</button>
       </div>
     </div>
   );

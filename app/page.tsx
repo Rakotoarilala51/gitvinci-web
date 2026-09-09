@@ -1,4 +1,5 @@
 "use client";
+import { useTranslation } from "react-i18next";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Grid, Intensity, SavedArt, ThemeMode, Tool, ThresholdConfig } from "../lib/types";
@@ -28,6 +29,8 @@ function parseThresholds(value: Partial<ThresholdConfig> | null): ThresholdConfi
 }
 
 export default function Home() {
+  const { t } = useTranslation();
+
   const [year, setYear] = useState(currentYear);
   const [grid, setGrid] = useState<Grid>(() => emptyGrid(calendarColumns(currentYear)));
   const [tool, setTool] = useState<Tool>("brush");
@@ -139,7 +142,7 @@ export default function Home() {
   }
 
   function loadArt(art: SavedArt) {
-    if (art.year < 2001 || art.year > maxYear) { notify("Ce motif utilise une année indisponible."); return; }
+    if (art.year < 2001 || art.year > maxYear) { notify(t("Ce motif utilise une année indisponible.")); return; }
     setThresholds(parseThresholds(art.thresholds));
     setYear(art.year);
     setGrid(normalizeGrid(art.grid, art.year));
@@ -150,15 +153,15 @@ export default function Home() {
 
   return (
     <main className="arcade-app min-h-screen">
-      <a className="skip-link" href="#editor">Aller à l’éditeur</a>
+      <a className="skip-link" href="#editor">{" "}{t("Aller à l’éditeur")}{" "}</a>
       <Navbar />
 
       <div className="app-container">
         <section className="hero" aria-labelledby="hero-title">
-          <div><p className="eyebrow">GITHUB CONTRIBUTION ART / ÉDITION ARCADE</p>
-            <h1 id="hero-title">Tes commits.<br /><span>Ton terrain de jeu.</span></h1>
-            <p className="hero-description">Un vrai calendrier, des pixels et tes idées. Dessine à la main, écris directement dans l’éditeur ou pars d’un template.</p>
-            <a href="#editor" className="hero-cta">À toi de jouer <span aria-hidden="true">↓</span></a>
+          <div><p className="eyebrow">{" "}{t("GITHUB CONTRIBUTION ART / ÉDITION ARCADE")}{" "}</p>
+            <h1 id="hero-title">{" "}{t("Tes commits.")}{" "}<br /><span>{" "}{t("Ton terrain de jeu.")}{" "}</span></h1>
+            <p className="hero-description">{" "}{t("Un vrai calendrier, des pixels et tes idées. Dessine à la main, écris directement dans l’éditeur ou pars d’un template.")}{" "}</p>
+            <a href="#editor" className="hero-cta">{" "}{t("À toi de jouer")}{" "}<span aria-hidden="true">↓</span></a>
           </div>
           <div className="pixel-art" aria-hidden="true">
             {["00100000100", "00010001000", "00111111100", "01101110110", "11111111111", "10100000101", "00011011000"].flatMap((row, y) =>
@@ -169,13 +172,13 @@ export default function Home() {
 
         <section id="editor" className="editor-section" aria-labelledby="editor-title">
           <div className="section-heading">
-            <div><span className="step-number">✎</span><h2 id="editor-title">Ton studio pixel</h2></div>
+            <div><span className="step-number">✎</span><h2 id="editor-title">{" "}{t("Ton studio pixel")}{" "}</h2></div>
             <div className="editor-settings">
-              <label htmlFor="calendar-year">Année</label>
+              <label htmlFor="calendar-year">{" "}{t("Année")}{" "}</label>
               <select id="calendar-year" value={year} onChange={event => changeYear(Number(event.target.value))}>
                 {Array.from({ length: maxYear - 2000 }, (_, i) => maxYear - i).map(value => <option key={value}>{value}</option>)}
               </select>
-              <button className="preview-toggle" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>{theme === "dark" ? "☀ Clair" : "☾ Sombre"}</button>
+              <button className="preview-toggle" onClick={() => setTheme(theme === "dark" ? "light" : "dark")}>{theme === "dark" ? t("☀ Clair") : t("☾ Sombre")}</button>
             </div>
           </div>
           <div className="studio-controls">
@@ -183,32 +186,32 @@ export default function Home() {
             <IntensityPalette selected={selectedIntensity} onChange={value => { setSelectedIntensity(value); if (text && textFits) { textStroke.current = false; writeText(text, value); textStroke.current = false; } }} theme={theme} />
           </div>
           <div className="editor-text">
-            <label htmlFor="pixel-text"><span aria-hidden="true">Tt</span> Texte → pixel art</label>
-            <input id="pixel-text" value={text} placeholder="Écris ici : CODE, HELLO, HIRE ME!…"
+            <label htmlFor="pixel-text"><span aria-hidden="true">Tt</span>{" "}{t("Texte → pixel art")}{" "}</label>
+            <input id="pixel-text" value={text} placeholder={t("Écris ici : CODE, HELLO, HIRE ME!…")}
               onFocus={() => { textStroke.current = false; }} onBlur={() => { textStroke.current = false; }}
               onChange={event => writeText(event.target.value)}
               aria-describedby="text-help" aria-invalid={!textFits} autoComplete="off" spellCheck={false} />
-            <span className={textFits ? "text-capacity" : "text-danger"}>{textPattern.width} / {space.width} colonnes</span>
+            <span className={textFits ? "text-capacity" : "text-danger"}>{textPattern.width} / {space.width}{" "}{t("colonnes")}{" "}</span>
           </div>
           <p id="text-help" className={`editor-help ${textFits ? "" : "text-danger"}`}>
-            {textFits ? "Le texte remplace le dessin en direct. Annuler restaure le motif précédent. Police 5 × 7 ; accents convertis, symboles inconnus remplacés par ?." : "Texte trop long pour les semaines disponibles. Raccourcis-le : le dernier motif valide est conservé."}
+            {textFits ? t("Le texte remplace le dessin en direct. Annuler restaure le motif précédent. Police 5 × 7 ; accents convertis, symboles inconnus remplacés par ?.") : t("Texte trop long pour les semaines disponibles. Raccourcis-le : le dernier motif valide est conservé.")}
           </p>
           <EditorGrid key={year} grid={grid} year={year} theme={theme} tool={tool} selectedIntensity={selectedIntensity} disabled={!ready}
             onEdit={(next, options) => { if (options.startStroke) remember(); setGrid(next); setText(""); textStroke.current = false; }} />
-          <div className="studio-status"><span>{year} · calendrier annuel · UTC · {grid.flat().filter(Boolean).length} jours dessinés</span>
-            <span>Dates futures éditables · décalage : 1 colonne = 7 jours</span>
-            <button className="studio-share" disabled={!grid.flat().some(Boolean)} onClick={() => setShareId(crypto.randomUUID())}>Partager le motif ↗</button>
+          <div className="studio-status"><span>{year}{" "}{t("· calendrier annuel · UTC ·")}{" "}{grid.flat().filter(Boolean).length}{" "}{t("jours dessinés")}{" "}</span>
+            <span>{" "}{t("Dates futures éditables · décalage : 1 colonne = 7 jours")}{" "}</span>
+            <button className="studio-share" disabled={!grid.flat().some(Boolean)} onClick={() => setShareId(crypto.randomUUID())}>{" "}{t("Partager le motif ↗")}{" "}</button>
           </div>
         </section>
 
-        <p className="editor-help">Les décalages conservent tout le motif : une direction se désactive si un pixel sortirait de l’année.</p>
+        <p className="editor-help">{" "}{t("Les décalages conservent tout le motif : une direction se désactive si un pixel sortirait de l’année.")}{" "}</p>
         <CommitPlan plan={plan} thresholds={thresholds} onThresholdsChange={setThresholds} />
-        <TemplatePicker year={year} theme={theme} onPaste={next => { replace(next); notify("Template ajouté. À toi de le personnaliser !"); }} />
-        <section className="library-section" id="gallery" aria-label="Mes motifs et import">
+        <TemplatePicker year={year} theme={theme} onPaste={next => { replace(next); notify(t("Template ajouté. À toi de le personnaliser !")); }} />
+        <section className="library-section" id="gallery" aria-label={t("Mes motifs et import")}>
           <Gallery grid={grid} year={year} thresholds={thresholds} theme={theme} onLoad={loadArt} onSaveNotification={notify} />
-          <details className="image-import"><summary>Importer une image</summary><ImageConverter year={year} theme={theme} onPaste={next => { replace(normalizeGrid(next, year)); notify("Image ajoutée."); }} /></details>
+          <details className="image-import"><summary>{" "}{t("Importer une image")}{" "}</summary><ImageConverter year={year} theme={theme} onPaste={next => { replace(normalizeGrid(next, year)); notify(t("Image ajoutée.")); }} /></details>
         </section>
-        <footer className="site-footer text-xs">Gitvinci · Ton atelier de contribution art. GitHub n’est pas affilié à ce projet.</footer>
+        <footer className="site-footer text-xs">{" "}{t("Gitvinci · Ton atelier de contribution art. GitHub n’est pas affilié à ce projet.")}{" "}</footer>
       </div>
       {notification && <div role="status" className="studio-notification">{notification}</div>}
       {shareId && <ShareModal id={shareId} grid={grid} year={year} thresholds={thresholds} theme={theme} onClose={() => setShareId(null)} />}

@@ -1,0 +1,131 @@
+.editor-tool-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  width: 100%;
+}
+.tool-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.tool-group + .tool-group {
+  border-left: 1px dotted var(--border-soft);
+  padding-left: 16px;
+}
+.tool-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  border: 1px solid var(--border-soft);
+  border-radius: 3px;
+  padding: 8px 12px;
+  font-size: 12px;
+  color: var(--fg);
+  background: var(--surface);
+}
+.tool-button svg {
+  flex-shrink: 0;
+}
+.tool-button kbd {
+  font:
+    9px var(--font-space-mono),
+    monospace;
+  opacity: 0.6;
+  margin-left: 4px;
+}
+.tool-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--accent), black 65%);
+  border-color: var(--accent);
+}
+.tool-button[aria-pressed="true"] {
+  background: var(--accent);
+  color: white;
+  border-color: var(--accent);
+  box-shadow: 0 3px 0 var(--secondary);
+}
+.tool-button:active:not(:disabled) {
+  transform: translateY(1px);
+}
+.tool-button.tool-danger:hover:not(:disabled) {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger), black 85%);
+}
+.commit-output {
+  margin-top: 40px;
+  padding: 24px;
+  border: 1px dotted var(--border-soft);
+}
+.commit-thresholds {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.commit-thresholds label {
+  font-size: 12px;
+  color: var(--muted);
+}
+.commit-thresholds select {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid var(--border-soft);
+}
+.commit-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.commit-actions [role="status"] {
+  color: var(--secondary);
+  font-size: 12px;
+}
+.commit-table {
+  max-height: 320px;
+  overflow: auto;
+  border: 1px solid var(--border-soft);
+}
+.commit-table table {
+  width: 100%;
+  text-align: left;
+  font-size: 12px;
+}
+.commit-table th {
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  color: var(--secondary);
+}
+.commit-table td,
+.commit-table th {
+  padding: 12px 16px;
+  border-bottom: 1px dotted var(--border-soft);
+}
+.commit-table td:first-child {
+  font-family: var(--font-space-mono), monospace;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .tool-group + .tool-group {
+    border-left: 0;
+    padding-left: 0;
+  }
+  .tool-button {
+    min-height: 44px;
+  }
+  .tool-button kbd {
+    display: none;
+  }
+  .commit-output {
+    padding: 16px;
+  }
+  .commit-thresholds {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

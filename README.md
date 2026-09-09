@@ -109,3 +109,9 @@ tests/        Tests automatisés
 ## Notes
 
 Gitvinci n'est pas affilié à GitHub. L’application prépare un plan de commits ; les paliers sont configurables et les nuances réelles de GitHub dépendent de l’activité du profil. Elle ne crée ni ne pousse automatiquement de commits sur un dépôt GitHub.
+
+## Langues
+
+L’interface est disponible en français et en anglais via le sélecteur **FR / EN** de la navbar. Le choix est mémorisé dans le navigateur sans modifier le motif.
+
+Les traductions sont gérées par **i18next** et **react-i18next**, dans `locales/fr.json` et `locales/en.json`. Le provider démarre en français pour conserver un rendu serveur cohérent, puis restaure la préférence locale. Pour ajouter un libellé, compléter les deux dictionnaires et utiliser `useTranslation()` dans le composant.

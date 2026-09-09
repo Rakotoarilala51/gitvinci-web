@@ -25,7 +25,9 @@ export default function IntensityPalette({ selected, onChange, theme }: Props) {
 
   return (
     <div className="studio-palette">
-      <span className="text-sm font-semibold" style={{ color: panel.text }}>{" "}{t("Intensité")}{" "}</span>
+      <span className="text-sm font-semibold" style={{ color: panel.text }}>
+        {t("Intensité")}
+      </span>
       {[1, 2, 3, 4].map((level) => (
         <button
           key={level}
@@ -39,8 +41,14 @@ export default function IntensityPalette({ selected, onChange, theme }: Props) {
             color: panel.text,
             borderColor: selected === level ? undefined : panel.border,
           }}
-          title={t("levelLabel", { level, label: t(LEVEL_INFO[level as Intensity]) })}
-          aria-label={t("intensityLabel", { level, label: t(LEVEL_INFO[level as Intensity]) })}
+          title={t("levelLabel", {
+            level,
+            label: t(LEVEL_INFO[level as Intensity]),
+          })}
+          aria-label={t("intensityLabel", {
+            level,
+            label: t(LEVEL_INFO[level as Intensity]),
+          })}
           aria-pressed={selected === level}
         >
           <span
